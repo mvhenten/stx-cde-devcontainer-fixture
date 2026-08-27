@@ -1,0 +1,21 @@
+{
+	"name": "stx-cde fixture",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {}
+	},
+	"containerEnv": {
+		"FIXTURE_ENV": "yes"
+	},
+	"forwardPorts": [3000, 8000],
+	"postCreateCommand": "echo created > ~/devcontainer-created.txt",
+	"postStartCommand": "date > ~/devcontainer-started.txt && nohup node server.mjs > ~/fixture-server.log 2>&1 &",
+	"customizations": {
+		"vscode": {
+			"extensions": ["esbenp.prettier-vscode"],
+			"settings": {
+				"editor.tabSize": 2
+			}
+		}
+	}
+}

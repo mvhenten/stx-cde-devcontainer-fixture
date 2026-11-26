@@ -20,6 +20,12 @@ The repository has a single container definition at
   devcontainer exec --workspace-folder . bash
   ```
 
+  This builds the container and runs the lifecycle commands, but it does **not**
+  forward ports: the standalone CLI does not implement `forwardPorts`
+  ([devcontainers/cli#22](https://github.com/devcontainers/cli/issues/22)).
+  Checks 1–5 all pass under it; check 6 does not apply. Use VS Code or an
+  stx-cde workstation to exercise forwarding.
+
 On a stx-cde workstation the repository is cloned and the container started for
 you. Expect a warning that the `image` key is unsupported: that key is in the
 fixture deliberately, so a refusal always shows up. The workstation builds from
@@ -65,9 +71,16 @@ Run these inside the container, from the workspace folder.
    If `postStartCommand` did not leave it running, start it yourself with
    `node server.mjs`.
 
-6. **Port forwarding works** — `forwardPorts` declares 3000 and 8000. Request
-   3000 from *outside* the container and you should get the same `fixture ok`.
-   On a stx-cde workstation the forwarded-port row for 3000 serves it through
-   the proxy on 8080.
+6. **Port forwarding works** — *VS Code or stx-cde only; skip this under the
+   standalone CLI, which does not forward ports.* `forwardPorts` declares 3000
+   and 8000.
 
-A change is good when all six still hold.
+   - Request 3000 from *outside* the container and you should get the same
+     `fixture ok`. On a stx-cde workstation the forwarded-port row for 3000
+     serves it through the proxy on 8080.
+   - On stx-cde, also confirm a row appears for **8000**. Nothing listens on
+     8000, so it will not serve anything — the row appearing at all is the
+     check, because it shows every declared port is picked up and not just the
+     one with a server behind it.
+
+A change is good when all six still hold — five if you are on the CLI.
